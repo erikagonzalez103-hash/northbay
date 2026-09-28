@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Before October 14 · North Bay Bookkeeping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap" rel="stylesheet">
+<style>
+/* ---------- Settings: fill these in before sending ---------- */
+</style>
+<script>
+  // Paste from Supabase > Project Settings > API
+  const SUPABASE_URL = "";      // e.g. https://abcdxyz.supabase.co
+  const SUPABASE_ANON_KEY = ""; // the "anon public" key
+  const TABLE = "northbay_survey";
+</script>
+<style>
+:root{
+  --cream:#FAFAF6; --cream-warm:#F5F2EA; --whisper:#EEF2EC; --sage-soft:#DFE7E0;
+  --border:#E8E3D7; --sage:#6E8B7A; --sage-deep:#4F6B5C; --moss:#3D544A;
+  --heading:#20231F; --body:#2F332E; --soft:#5A5E55; --muted:#8A8E83; --surface:#FFFFFF;
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--cream);color:var(--body);font-family:var(--serif);
+  font-size:17px;line-height:1.6;font-variation-settings:"opsz" 16;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:620px;margin:0 auto;padding:40px 24px 80px}
+header.top{display:flex;align-items:center;gap:10px;color:var(--soft);font-size:14px;margin-bottom:48px}
+header.top svg{flex:none}
+.progress{height:2px;background:var(--border);border-radius:2px;margin-bottom:40px;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:var(--sage);transition:width .35s ease}
+h1{font-weight:400;font-size:clamp(34px,6vw,44px);line-height:1.1;color:var(--heading);
+  margin:0 0 20px;font-variation-settings:"opsz" 120;letter-spacing:-.01em}
+h2{font-weight:400;font-size:28px;line-height:1.2;color:var(--heading);margin:0 0 8px;font-variation-settings:"opsz" 72}
+.step-count{color:var(--muted);font-size:14px;margin:0 0 6px}
+.lede{color:var(--soft);margin:0 0 32px}
+p{margin:0 0 16px}
+em{font-style:italic;color:var(--sage-deep)}
+.note{background:var(--whisper);border-left:2px solid var(--sage);padding:16px 18px;margin:28px 0;color:var(--body);font-size:16px}
+.note p:last-child{margin:0}
+.meta{color:var(--soft);font-size:15px}
+
+section.step{display:none}
+section.step.active{display:block}
+.q{margin:0 0 34px;border:0;padding:0}
+.q > label.qt, .q > legend{display:block;font-weight:500;color:var(--heading);margin-bottom:4px;padding:0;font-size:17px}
+.hint{display:block;color:var(--muted);font-size:14.5px;margin-bottom:12px;font-style:italic}
+input[type=text], textarea, select{width:100%;font:inherit;font-size:16px;color:var(--body);background:var(--surface);
+  border:1px solid var(--border);border-radius:6px;padding:12px 14px;transition:border-color .15s}
+textarea{min-height:96px;resize:vertical;line-height:1.5}
+input[type=text]:focus, textarea:focus, select:focus{outline:none;border-color:var(--sage);box-shadow:0 0 0 3px var(--sage-soft)}
+.stack input[type=text]{margin-bottom:8px}
+
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts.row{flex-direction:row;flex-wrap:wrap}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt span{display:block;padding:10px 14px;border:1px solid var(--border);border-radius:6px;background:var(--surface);
+  cursor:pointer;font-size:16px;transition:background .15s,border-color .15s}
+.opt input:checked + span{background:var(--whisper);border-color:var(--sage);color:var(--moss)}
+.opt input:focus-visible + span{box-shadow:0 0 0 3px var(--sage-soft);border-color:var(--sage)}
+.opts.row .opt span{padding:8px 14px}
+
+.scale{margin:0 0 20px}
+.scale .task{font-size:16px;margin-bottom:6px;color:var(--body)}
+.dots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.dots .opt span{text-align:center;padding:8px 0}
+.ends{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-top:4px}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:44px;gap:12px}
+button{font:inherit;font-size:16px;border-radius:6px;padding:12px 22px;cursor:pointer;border:1px solid transparent}
+.primary{background:var(--sage-deep);color:var(--cream)}
+.primary:hover{background:var(--moss)}
+.ghost{background:transparent;color:var(--soft);border-color:var(--border)}
+.ghost:hover{border-color:var(--sage);color:var(--sage-deep)}
+button:focus-visible{outline:none;box-shadow:0 0 0 3px var(--sage-soft)}
+button[disabled]{opacity:.6;cursor:default}
+.err{color:#8A3B2E;font-size:15px;margin-top:12px;min-height:1em}
+.saved{color:var(--muted);font-size:13px}
+
+.branch{display:none}
+.branch.on{display:block}
+.branch-intro{color:var(--soft);font-style:italic;margin:8px 0 20px;padding-top:24px;border-top:1px solid var(--border)}
+
+footer{margin-top:72px;color:var(--muted);font-size:13.5px;display:flex;align-items:center;gap:8px}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:480px){.wrap{padding:28px 18px 64px}header.top{margin-bottom:36px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <svg width="18" height="22" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+    <path d="M9 21c0-5 .2-9 .1-12.5" stroke="#6E8B7A" stroke-width="1.3" stroke-linecap="round"/>
+    <path d="M9.1 11C8.6 7.6 5.9 5.3 2 5.4c.4 3.5 3.1 5.6 7.1 5.6Z" stroke="#6E8B7A" stroke-width="1.3" stroke-linejoin="round"/>
+    <path d="M9.2 8.6c.3-3.3 2.6-5.7 6.3-5.9-.2 3.3-2.5 5.7-6.3 5.9Z" stroke="#6E8B7A" stroke-width="1.3" stroke-linejoin="round"/>
+    <circle cx="9" cy="1.6" r=".9" fill="#6E8B7A"/>
+  </svg>
+  <span>North Bay Bookkeeping &nbsp;/&nbsp; AI working session</span>
+</header>
+
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+
+<form id="survey" novalidate>
+
+<!-- 0. Welcome -->
+<section class="step active" data-step="0">
+  <h1>Before we sit down on October 14</h1>
+  <p>This is a short set of questions about your work, the tools you use, and where AI might actually help you. Your answers shape the session, so we spend the afternoon on your real work instead of a generic demo.</p>
+  <p class="meta">About 12 minutes. Please finish by <strong>Sunday, October 4</strong>.</p>
+  <div class="note">
+    <p><strong>Who sees this.</strong> Erika reads every answer. Nothing you write gets shared word for word with the group; in the session she'll talk about themes, not who said what.</p>
+    <p>Skip anything you'd rather not answer. There are no wrong answers here, including "I don't know" and "I've never tried it."</p>
+    <p>Please don't paste in any client names or client financial details.</p>
+  </div>
+  <div class="nav"><span></span><button type="button" class="primary" data-next>Start</button></div>
+</section>
+
+<!-- 1. About you -->
+<section class="step" data-step="1">
+  <p class="step-count">1 of 7</p>
+  <h2>About you</h2>
+  <p class="lede">So the session fits the job you actually do.</p>
+
+  <div class="q">
+    <label class="qt" for="who">Your name</label>
+    <select id="who" name="who" required>
+      <option value="">Choose one</option>
+      <option>Tara</option><option>Blaine</option><option>Jack</option><option>Carlos</option>
+      <option value="other">Someone else</option>
+    </select>
+    <input type="text" name="who_other" id="who_other" placeholder="Your name" style="display:none;margin-top:8px">
+    <div class="err" id="who_err" role="alert"></div>
+  </div>
+
+  <div class="q">
+    <label class="qt" for="role">What do you do at North Bay, in your own words?</label>
+    <span class="hint">What would you tell a friend, not what's on a business card.</span>
+    <textarea id="role" name="role"></textarea>
+  </div>
+
+  <fieldset class="q">
+    <legend>How long have you been with North Bay?</legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="tenure" value="under 6 months"><span>Under 6 months</span></label>
+      <label class="opt"><input type="radio" name="tenure" value="6 months to 2 years"><span>6 months to 2 years</span></label>
+      <label class="opt"><input type="radio" name="tenure" value="2 to 5 years"><span>2 to 5 years</span></label>
+      <label class="opt"><input type="radio" name="tenure" value="5+ years"><span>More than 5 years</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset class="q">
+    <legend>When the firm picks a new tool or sets a policy, where do you sit?</legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="decides" value="decides"><span>I make those calls</span></label>
+      <label class="opt"><input type="radio" name="decides" value="has a say"><span>I have a say</span></label>
+      <label class="opt"><input type="radio" name="decides" value="not my area"><span>Not really my area</span></label>
+    </div>
+  </fieldset>
+
+  <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="primary" data-next>Next</button></div>
+</section>
+
+<!-- 2. Tools -->
+<section class="step" data-step="2">
+  <p class="step-count">2 of 7</p>
+  <h2>The tools you use now</h2>
+  <p class="lede">AI works best when it plugs into what you already have open all day.</p>
+
+  <fieldset class="q">
+    <legend>Which of these do you use for work?</legend>
+    <span class="hint">Check all that apply.</span>
+    <div class="opts row">
+      <label class="opt"><input type="checkbox" name="tools" value="QuickBooks Online"><span>QuickBooks Online</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="QuickBooks Desktop"><span>QuickBooks Desktop</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Xero"><span>Xero</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Excel"><span>Excel</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Google Sheets"><span>Google Sheets</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Outlook / Microsoft 365"><span>Outlook / Microsoft 365</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Gmail / Google Workspace"><span>Gmail / Google Workspace</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Gusto"><span>Gusto</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Dext"><span>Dext</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Client portal"><span>A client portal</span></label>
+      <label class="opt"><input type="checkbox" name="tools" value="Practice management"><span>Practice management</span></label>
+    </div>
+  </fieldset>
+
+  <div class="q">
+    <label class="qt" for="tools_named">Anything missing from the list?</label>
+    <span class="hint">For example, the name of your client portal or practice management software.</span>
+    <input type="text" id="tools_named" name="tools_named">
+  </div>
+
+  <div class="q">
+    <label class="qt" for="tool_most">Which one do you spend the most hours in?</label>
+    <input type="text" id="tool_most" name="tool_most">
+  </div>
+
+  <fieldset class="q">
+    <legend>Which AI tools have you opened, even once?</legend>
+    <span class="hint">Work or personal. Check all that apply.</span>
+    <div class="opts row">
+      <label class="opt"><input type="checkbox" name="ai_tools" value="ChatGPT"><span>ChatGPT</span></label>
+      <label class="opt"><input type="checkbox" name="ai_tools" value="Claude"><span>Claude</span></label>
+      <label class="opt"><input type="checkbox" name="ai_tools" value="Microsoft Copilot"><span>Microsoft Copilot</span></label>
+      <label class="opt"><input type="checkbox" name="ai_tools" value="Gemini"><span>Gemini</span></label>
+      <label class="opt"><input type="checkbox" name="ai_tools" value="AI inside QuickBooks or another app"><span>AI built into QuickBooks or another app</span></label>
+      <label class="opt"><input type="checkbox" name="ai_tools" value="None"><span>None yet</span></label>
+    </div>
+    <input type="text" name="ai_tools_other" placeholder="Anything else?" style="margin-top:10px">
+  </fieldset>
+
+  <fieldset class="q">
+    <legend>Do you pay for any of them?</legend>
+    <div class="opts row">
+      <label class="opt"><input type="radio" name="ai_paid" value="yes, the firm pays"><span>Yes, the firm pays</span></label>
+      <label class="opt"><input type="radio" name="ai_paid" value="yes, I pay personally"><span>Yes, I pay personally</span></label>
+      <label class="opt"><input type="radio" name="ai_paid" value="no, free versions"><span>No, free versions</span></label>
+      <label class="opt"><input type="radio" name="ai_paid" value="not sure"><span>Not sure</span></label>
+    </div>
+  </fieldset>
+
+  <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="primary" data-next>Next</button></div>
+</section>
+
+<!-- 3. You and AI -->
+<section class="step" data-step="3">
+  <p class="step-count">3 of 7</p>
+  <h2>You and AI so far</h2>
+  <p class="lede">Wherever you are is a fine place to start.</p>
+
+  <fieldset class="q">
+    <legend>Which sounds most like you?</legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="ai_use" value="haven't really tried it"><span>I haven't really tried it</span></label>
+      <label class="opt"><input type="radio" name="ai_use" value="tried a few times"><span>I've tried it a few times</span></label>
+      <label class="opt"><input type="radio" name="ai_use" value="now and then"><span>I use it now and then</span></label>
+      <label class="opt"><input type="radio" name="ai_use" value="most weeks"><span>I use it most weeks</span></label>
+      <label class="opt"><input type="radio" name="ai_use" value="daily"><span>I use it every day</span></label>
+    </div>
+  </fieldset>
+
+  <div class="q">
+    <label class="qt" for="ai_used_for">What have you used it for so far?</label>
+    <span class="hint">Work or personal, big or small. A recipe, a hard email, a spreadsheet formula. It all counts.</span>
+    <textarea id="ai_used_for" name="ai_used_for"></textarea>
+  </div>
+
+  <div class="q" role="group" aria-labelledby="conf_label">
+    <span class="qt" id="conf_label" style="display:block;font-weight:500;color:var(--heading)">How comfortable would you be using AI to do each of these?</span>
+    <span class="hint">1 is "never tried it." 5 is "I could show someone else."</span>
+    <div id="conf_grid"></div>
+  </div>
+
+  <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="primary" data-next>Next</button></div>
+</section>
+
+<!-- 4. Your week -->
+<section class="step" data-step="4">
+  <p class="step-count">4 of 7</p>
+  <h2>Your week</h2>
+  <p class="lede">This is the most useful part. Be as specific as you can.</p>
+
+  <div class="q stack">
+    <label class="qt" for="time1">What three tasks eat the most of your week?</label>
+    <input type="text" id="time1" name="time1" aria-label="First task">
+    <input type="text" name="time2" aria-label="Second task">
+    <input type="text" name="time3" aria-label="Third task">
+  </div>
+
+  <div class="q">
+    <label class="qt" for="repetitive">What do you do every week or month that feels like copying and pasting?</label>
+    <span class="hint">The same email, the same checklist, the same reconciling, the same reminders.</span>
+    <textarea id="repetitive" name="repetitive"></textarea>
+  </div>
+
+  <div class="q">
+    <label class="qt" for="hand_off">If someone took one task off your plate tomorrow, which one would you hand over?</label>
+    <input type="text" id="hand_off" name="hand_off">
+  </div>
+
+  <div class="q">
+    <label class="qt" for="cracks">Where do things fall through the cracks?</label>
+    <textarea id="cracks" name="cracks"></textarea>
+  </div>
+
+  <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="primary" data-next>Next</button></div>
+</section>
+
+<!-- 5. Clients and data -->
+<section class="step" data-step="5">
+  <p class="step-count">5 of 7</p>
+  <h2>Client privacy</h2>
+  <p class="lede">A bookkeeping firm holds people's money details, so privacy matters more here than in most businesses.</p>
+
+  <div class="q" role="group" aria-labelledby="comfort_label">
+    <span class="qt" id="comfort_label" style="display:block;font-weight:500;color:var(--heading)">How comfortable are you using AI when client privacy is involved?</span>
+    <div class="dots" style="margin-top:10px">
+      <label class="opt"><input type="radio" name="data_comfort" value="1"><span>1</span></label>
+      <label class="opt"><input type="radio" name="data_comfort" value="2"><span>2</span></label>
+      <label class="opt"><input type="radio" name="data_comfort" value="3"><span>3</span></label>
+      <label class="opt"><input type="radio" name="data_comfort" value="4"><span>4</span></label>
+      <label class="opt"><input type="radio" name="data_comfort" value="5"><span>5</span></label>
+    </div>
+    <div class="ends"><span>Very uneasy</span><span>Very comfortable</span></div>
+  </div>
+
+  <fieldset class="q">
+    <legend>Do you know what North Bay promises clients about their privacy?</legend>
+    <div class="opts row">
+      <label class="opt"><input type="radio" name="knows_promise" value="yes"><span>Yes</span></label>
+      <label class="opt"><input type="radio" name="knows_promise" value="roughly"><span>Roughly</span></label>
+      <label class="opt"><input type="radio" name="knows_promise" value="no"><span>Not really</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset class="q">
+    <legend>Has a client ever asked whether North Bay uses AI?</legend>
+    <div class="opts row">
+      <label class="opt"><input type="radio" name="clients_asked" value="yes"><span>Yes</span></label>
+      <label class="opt"><input type="radio" name="clients_asked" value="no"><span>No</span></label>
+      <label class="opt"><input type="radio" name="clients_asked" value="not that I know of"><span>Not that I know of</span></label>
+    </div>
+    <input type="text" name="clients_asked_detail" placeholder="If yes, what did they want to know?" style="margin-top:10px">
+  </fieldset>
+
+  <div class="q">
+    <label class="qt" for="client_friction">What do clients do (or not do) that slows your work down?</label>
+    <span class="hint">Late documents, the same questions every month, missing receipts.</span>
+    <textarea id="client_friction" name="client_friction"></textarea>
+  </div>
+
+  <fieldset class="q">
+    <legend>When AI helps with a piece of work, how do you check it before it reaches a client?</legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="check_work" value="read it over"><span>I read it over</span></label>
+      <label class="opt"><input type="radio" name="check_work" value="check numbers against source"><span>I check the numbers against the source</span></label>
+      <label class="opt"><input type="radio" name="check_work" value="someone else reviews"><span>Someone else reviews it</span></label>
+      <label class="opt"><input type="radio" name="check_work" value="haven't thought about it"><span>I haven't thought about it yet</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset class="q">
+    <legend>Does North Bay have written rules about using AI?</legend>
+    <div class="opts row">
+      <label class="opt"><input type="radio" name="written_rules" value="yes"><span>Yes</span></label>
+      <label class="opt"><input type="radio" name="written_rules" value="informal"><span>An informal understanding</span></label>
+      <label class="opt"><input type="radio" name="written_rules" value="no"><span>No</span></label>
+      <label class="opt"><input type="radio" name="written_rules" value="not sure"><span>Not sure</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset class="q">
+    <legend>If AI helped with something, should the file show that?</legend>
+    <div class="opts row">
+      <label class="opt"><input type="radio" name="note_ai_use" value="always"><span>Always</span></label>
+      <label class="opt"><input type="radio" name="note_ai_use" value="client-facing only"><span>Only for client-facing work</span></label>
+      <label class="opt"><input type="radio" name="note_ai_use" value="no"><span>No</span></label>
+      <label class="opt"><input type="radio" name="note_ai_use" value="not sure"><span>Not sure</span></label>
+    </div>
+  </fieldset>
+
+  <div class="branch" data-branch="decides">
+    <p class="branch-intro">A few more for the people who make the calls.</p>
+    <div class="q">
+      <label class="qt" for="house_rules">What should North Bay's AI rules cover?</label>
+      <textarea id="house_rules" name="house_rules"></textarea>
+    </div>
+    <fieldset class="q">
+      <legend>What would feel reasonable to spend on AI tools, per person, per month?</legend>
+      <div class="opts row">
+        <label class="opt"><input type="radio" name="budget" value="under $25"><span>Under $25</span></label>
+        <label class="opt"><input type="radio" name="budget" value="$25 to $50"><span>$25 to $50</span></label>
+        <label class="opt"><input type="radio" name="budget" value="$50 to $100"><span>$50 to $100</span></label>
+        <label class="opt"><input type="radio" name="budget" value="depends on time saved"><span>Depends on what it saves</span></label>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="branch" data-branch="new">
+    <p class="branch-intro">A couple for anyone who's newer to North Bay.</p>
+    <div class="q">
+      <label class="qt" for="hard_to_learn">What's been hardest to pick up since you started?</label>
+      <textarea id="hard_to_learn" name="hard_to_learn"></textarea>
+    </div>
+    <div class="q">
+      <label class="qt" for="wish_written">What do you wish were written down somewhere?</label>
+      <textarea id="wish_written" name="wish_written"></textarea>
+    </div>
+  </div>
+
+  <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="primary" data-next>Next</button></div>
+</section>
+
+<!-- 6. Concerns -->
+<section class="step" data-step="6">
+  <p class="step-count">6 of 7</p>
+  <h2>What gives you pause</h2>
+  <p class="lede">Most people have at least one concern about AI. Naming it helps Erika plan the session around it.</p>
+
+  <fieldset class="q">
+    <legend>Which of these, if any, are on your mind?</legend>
+    <span class="hint">Check all that apply.</span>
+    <div class="opts">
+      <label class="opt"><input type="checkbox" name="worries" value="getting something wrong in front of a client"><span>Getting something wrong in front of a client</span></label>
+      <label class="opt"><input type="checkbox" name="worries" value="client data ending up where it shouldn't"><span>Client data ending up where it shouldn't</span></label>
+      <label class="opt"><input type="checkbox" name="worries" value="how it could change my job"><span>How AI could change my job</span></label>
+      <label class="opt"><input type="checkbox" name="worries" value="feeling behind"><span>Feeling behind, or looking behind</span></label>
+      <label class="opt"><input type="checkbox" name="worries" value="no time to learn"><span>Not having time to learn new AI tools</span></label>
+      <label class="opt"><input type="checkbox" name="worries" value="not trusting the answers"><span>Not trusting the answers AI gives me</span></label>
+      <label class="opt"><input type="checkbox" name="worries" value="cost"><span>What AI tools cost</span></label>
+      <label class="opt"><input type="checkbox" name="worries" value="not much"><span>Honestly, not much</span></label>
+    </div>
+  </fieldset>
+
+  <div class="q">
+    <label class="qt" for="worries_more">Anything else on your mind about using AI at work?</label>
+    <textarea id="worries_more" name="worries_more"></textarea>
+  </div>
+
+  <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="primary" data-next>Next</button></div>
+</section>
+
+<!-- 7. Wishlist & session -->
+<section class="step" data-step="7">
+  <p class="step-count">7 of 7</p>
+  <h2>Your wishlist</h2>
+  <p class="lede">Last page.</p>
+
+  <div class="q">
+    <label class="qt" for="magic_wand">If AI could take care of one thing in your workday, what would it be?</label>
+    <span class="hint">Don't worry about whether it's possible yet.</span>
+    <textarea id="magic_wand" name="magic_wand"></textarea>
+  </div>
+
+  <div class="q">
+    <label class="qt" for="worth_it">At the end of October 14, what would make this worth your afternoon?</label>
+    <textarea id="worth_it" name="worth_it"></textarea>
+  </div>
+
+  <fieldset class="q">
+    <legend>How do you like to learn something new on a computer?</legend>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="learn" value="hands on"><span>Let me try it myself right away</span></label>
+      <label class="opt"><input type="radio" name="learn" value="show then try"><span>Show me once, then let me try</span></label>
+      <label class="opt"><input type="radio" name="learn" value="slow walkthrough"><span>Walk me through it step by step</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset class="q">
+    <legend>What will you have with you in the session?</legend>
+    <div class="opts row">
+      <label class="opt"><input type="radio" name="device" value="laptop"><span>Laptop</span></label>
+      <label class="opt"><input type="radio" name="device" value="tablet"><span>Tablet</span></label>
+      <label class="opt"><input type="radio" name="device" value="phone only"><span>Just my phone</span></label>
+      <label class="opt"><input type="radio" name="device" value="not sure"><span>Not sure yet</span></label>
+    </div>
+  </fieldset>
+
+  <div class="q">
+    <label class="qt" for="anything_else">Anything else Erika should know?</label>
+    <textarea id="anything_else" name="anything_else"></textarea>
+  </div>
+
+  <div class="nav">
+    <button type="button" class="ghost" data-back>Back</button>
+    <button type="submit" class="primary" id="submitBtn">Send my answers</button>
+  </div>
+  <div class="err" id="submit_err" role="alert"></div>
+</section>
+
+<!-- Done -->
+<section class="step" data-step="8">
+  <h1>Thank you</h1>
+  <p>Your answers are in. Erika will use them to build the session around your actual work.</p>
+  <p class="meta">See you Wednesday, October 14 at 2:00.</p>
+</section>
+
+</form>
+
+<p class="saved" id="savedNote" aria-live="polite"></p>
+
+<footer>Prepared by Erika Gonzalez Harrison, Quinta &amp; Co.</footer>
+</div>
+
+<script>
+(function(){
+  const form = document.getElementById('survey');
+  const steps = [...document.querySelectorAll('section.step')];
+  const last = steps.length - 1; // done screen
+  const bar = document.getElementById('bar');
+  const DRAFT_KEY = 'northbay_survey_draft_v1';
+  let current = 0;
+
+  // Confidence grid
+  const tasks = [
+    ['conf_email','Write or clean up an email to a client'],
+    ['conf_summary','Summarize a long document or email thread'],
+    ['conf_sheet','Clean up or reformat a spreadsheet'],
+    ['conf_explain','Explain an accounting or tax rule in plain English'],
+    ['conf_process','Write out a step-by-step process or checklist'],
+    ['conf_check','Check AI\u2019s work for mistakes']
+  ];
+  const grid = document.getElementById('conf_grid');
+  tasks.forEach(([name,label])=>{
+    const d = document.createElement('div'); d.className='scale';
+    d.setAttribute('role','radiogroup'); d.setAttribute('aria-label',label);
+    let h = '<div class="task">'+label+'</div><div class="dots">';
+    for(let i=1;i<=5;i++) h += '<label class="opt"><input type="radio" name="'+name+'" value="'+i+'"><span>'+i+'</span></label>';
+    h += '</div>';
+    d.innerHTML = h; grid.appendChild(d);
+  });
+
+  // Name "other"
+  const who = document.getElementById('who'), whoOther = document.getElementById('who_other');
+  who.addEventListener('change',()=>{ whoOther.style.display = who.value==='other' ? 'block':'none'; });
+
+  function collect(){
+    const out = {};
+    const fd = new FormData(form);
+    for (const [k,v] of fd.entries()){
+      const el = form.elements[k];
+      const isMulti = el && el.length && el[0] && el[0].type==='checkbox';
+      if (isMulti){ (out[k] = out[k] || []).push(v); }
+      else if (v !== '') out[k] = v;
+    }
+    return out;
+  }
+  function restore(data){
+    Object.entries(data||{}).forEach(([k,v])=>{
+      const el = form.elements[k]; if(!el) return;
+      if (Array.isArray(v)) { [...el].forEach(c=>{ c.checked = v.includes(c.value); }); }
+      else if (el.length && el[0] && el[0].type==='radio'){ [...el].forEach(r=>{ r.checked = r.value===v; }); }
+      else el.value = v;
+    });
+    who.dispatchEvent(new Event('change'));
+  }
+  function branches(){
+    const d = collect();
+    document.querySelector('[data-branch="decides"]').classList.toggle('on', d.decides==='decides' || d.decides==='has a say');
+    document.querySelector('[data-branch="new"]').classList.toggle('on', d.tenure==='under 6 months');
+  }
+
+  let saveTimer;
+  form.addEventListener('input',()=>{
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(()=>{
+      try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(collect()));
+        document.getElementById('savedNote').textContent = 'Draft saved on this device.'; }catch(e){}
+    },500);
+  });
+
+  function show(i){
+    steps[current].classList.remove('active');
+    current = i; steps[current].classList.add('active');
+    bar.style.width = Math.round((current/(last))*100)+'%';
+    branches();
+    window.scrollTo({top:0,behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto':'smooth'});
+    const f = steps[current].querySelector('h1,h2'); if(f){ f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); }
+  }
+
+  form.addEventListener('click',e=>{
+    if (e.target.matches('[data-next]')){
+      if (current===1){
+        const err = document.getElementById('who_err');
+        if (!who.value || (who.value==='other' && !whoOther.value.trim())){ err.textContent='Choose your name to continue.'; who.focus(); return; }
+        err.textContent='';
+      }
+      show(current+1);
+    }
+    if (e.target.matches('[data-back]')) show(current-1);
+  });
+
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn'), err = document.getElementById('submit_err');
+    err.textContent='';
+    const answers = collect();
+    const respondent = answers.who==='other' ? (answers.who_other||'Someone else') : answers.who;
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY){
+      err.textContent = 'Preview mode: answers are not being saved yet. Add the Supabase settings to turn this on.';
+      console.log('Preview answers', {respondent, answers});
+      return;
+    }
+    btn.disabled = true; btn.textContent = 'Sending\u2026';
+    try{
+      const res = await fetch(SUPABASE_URL.replace(/\/$/,'')+'/rest/v1/'+TABLE,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,
+          'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Prefer':'return=minimal'},
+        body: JSON.stringify({respondent, answers})
+      });
+      if(!res.ok) throw new Error(res.status);
+      try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+      document.getElementById('savedNote').textContent='';
+      show(last);
+    }catch(ex){
+      err.textContent = 'Your answers didn\u2019t send. Check your connection and try again. Your draft is still saved on this device.';
+      btn.disabled = false; btn.textContent = 'Send my answers';
+    }
+  });
+
+  try{ const d = localStorage.getItem(DRAFT_KEY); if(d) restore(JSON.parse(d)); }catch(e){}
+  branches();
+})();
+</script>
+</body>
+</html>
